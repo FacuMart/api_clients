@@ -1,12 +1,15 @@
 package com.api.api_clients.clients;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -32,7 +35,7 @@ public class ClientController {
         }
     }
 
-    @PostMapping
+    /*@PostMapping
     public ResponseEntity<?> createClient(@RequestBody Client client) {
         try {
             Client createdClient = clientService.createClient(client);
@@ -41,7 +44,22 @@ public class ClientController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error creating client: " + ex.getMessage());
         }
+    }*/
+
+    @PostMapping
+    public ResponseEntity<?> createClient(@Valid @RequestBody Client client, BindingResult result) {
+        if (result.hasErrors()) {
+            List<String> errors = result.getFieldErrors()
+                    .stream()
+                    .map(e -> e.getField() + ": " + e.getDefaultMessage())
+                    .collect(Collectors.toList());
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        Client createdClient = clientService.createClient(client);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdClient);
     }
+
 
     @PutMapping
     public ResponseEntity<?> updateClient(@RequestBody Client client) {

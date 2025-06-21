@@ -21,7 +21,7 @@ public class ClientService {
                 .orElseThrow(() -> new ResourceNotFoundException("Client not found with id: " + id));
     }
 
-    public Client createClient(Client c) {
+    /*public Client createClient(Client c) {
 
         if (c.getName() == null || c.getName().isEmpty())
             throw new IllegalArgumentException("The name must not be empty.");
@@ -34,6 +34,11 @@ public class ClientService {
 
         c.setId(null);
 
+        return clientRepository.save(c);
+    }*/
+
+    public Client createClient(Client c) {
+        c.setId(null);
         return clientRepository.save(c);
     }
 
@@ -52,7 +57,7 @@ public class ClientService {
                 .orElseThrow(() -> new ResourceNotFoundException("Client not found with id: " + c.getId()));
 
         if (c.getName().equals(oC.getName()) && c.getEmail().equals(oC.getEmail()) && c.getPhone().equals(oC.getPhone()))
-            throw  new IllegalArgumentException("You have to modify at least one field.");
+            throw new IllegalArgumentException("You have to modify at least one field.");
 
         return clientRepository.save(c);
     }
